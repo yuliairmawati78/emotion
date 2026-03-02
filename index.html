@@ -93,32 +93,7 @@ transition:transform 0.3s;
 }
 
 .bubble:hover{transform:scale(1.1);}
-.modal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.4);
-display:none;
-align-items:center;
-justify-content:center;
-animation:fadeIn 0.3s ease;
-}
 
-@keyframes fadeIn{
-from{opacity:0;}
-to{opacity:1;}
-}
-
-.card{
-animation:popUp 0.3s ease;
-}
-
-@keyframes popUp{
-from{transform:scale(0.8);opacity:0;}
-to{transform:scale(1);opacity:1;}
-}
 /* MODAL */
 .modal{
 position:fixed;
@@ -201,18 +176,7 @@ background:#ff9e9e !important;
 <button onclick="closeForm()">Batal</button>
 </div>
 </div>
-<!-- DETAIL MODAL -->
-<div id="detailModal" class="modal">
-  <div class="card" id="detailCard">
-    <h2 id="dJudul"></h2>
-    <p id="dTanggal"></p>
-    <p id="dLevel"></p>
-    <p id="dKategori"></p>
-    <textarea id="dIsi" readonly style="height:100px;"></textarea>
-    <button onclick="closeDetail()">Tutup</button>
-  </div>
-</div>
-  
+
 <!-- EDIT -->
 <div id="editModal" class="modal">
 <div class="card">
@@ -271,24 +235,17 @@ const colors={
 let bubbles=[];
 let selectedId=null;
 let editMode=false;
+let createdDate=null;
 
-window.toggleMenu=()=>{
-menuBox.style.display = 
+window.toggleMenu=()=>menuBox.style.display=
 menuBox.style.display==="flex"?"none":"flex";
-};
 
 function checkPass(){
 return prompt("Masukkan password:")===PASSWORD;
 }
 
-window.openForm=()=>{
-if(!checkPass()) return;
-formModal.style.display="flex";
-};
-
-window.closeForm=()=>{
-formModal.style.display="none";
-};
+window.openForm=()=>{if(!checkPass())return;formModal.style.display="flex";}
+window.closeForm=()=>formModal.style.display="none";
 
 window.saveNote=async()=>{
 await addDoc(collection(db,"notes"),{
@@ -299,11 +256,11 @@ level:parseInt(level.value),
 kategori:kategori.value
 });
 closeForm();
-await loadNotes();
+loadNotes();
 };
 
 window.enterEditMode=()=>{
-if(!checkPass()) return;
+if(!checkPass())return;
 editMode=true;
 alert("Klik bubble yang ingin diedit atau dihapus.");
 };
@@ -316,49 +273,36 @@ level:parseInt(eLevel.value),
 kategori:eKategori.value
 });
 editModal.style.display="none";
-editMode=false;
-await loadNotes();
+loadNotes();
 };
 
 window.deleteNote=async()=>{
 await deleteDoc(doc(db,"notes",selectedId));
 editModal.style.display="none";
-editMode=false;
-await loadNotes();
+loadNotes();
 };
 
 async function loadNotes(){
-
-// HAPUS semua bubble lama dari DOM
-document.querySelectorAll(".bubble").forEach(b=>b.remove());
-
-// reset array
+bubbles.forEach(b=>b.el.remove());
 bubbles=[];
-
 const snap=await getDocs(collection(db,"notes"));
-
-snap.forEach(d=>{
-createBubble(d.data(),d.id);
-});
+snap.forEach(d=>createBubble(d.data(),d.id));
 }
 
 function createBubble(note,id){
-
 let size=90+note.level*10;
-
 let el=document.createElement("div");
 el.className="bubble";
 el.style.width=size+"px";
 el.style.height=size+"px";
 el.style.background=colors[note.level];
 el.innerText=note.judul;
-
 document.body.appendChild(el);
 
 let bubble={
 el,id,note,
-x:Math.random()*(window.innerWidth-size),
-y:Math.random()*(window.innerHeight-size),
+x:Math.random()*(innerWidth-size),
+y:Math.random()*(innerHeight-size),
 dx:(Math.random()*2+1)*(Math.random()>.5?1:-1),
 dy:(Math.random()*2+1)*(Math.random()>.5?1:-1),
 size
@@ -368,51 +312,15 @@ el.style.left=bubble.x+"px";
 el.style.top=bubble.y+"px";
 
 el.onclick=()=>{
-
 selectedId=id;
-
 if(editMode){
-// MODE EDIT
 eJudul.value=note.judul;
 eIsi.value=note.isi;
 eLevel.value=note.level;
 eKategori.value=note.kategori;
 editModal.style.display="flex";
+editMode=false;
 }
-else{
-// MODE DETAIL AESTHETIC
-dJudul.innerText=note.judul;
-dTanggal.innerText="Tanggal: "+note.tanggal;
-dLevel.innerText="Level: "+note.level;
-dKategori.innerText="Kategori: "+note.kategori;
-dIsi.value=note.isi;
-
-detailCard.style.background=colors[note.level];
-detailModal.style.display="flex";
-}
-
-};
-
-selectedId=id;
-
-if(editMode){
-// buka edit
-eJudul.value=note.judul;
-eIsi.value=note.isi;
-eLevel.value=note.level;
-eKategori.value=note.kategori;
-editModal.style.display="flex";
-}
-else{
-// tampil detail
-alert(
-note.judul +
-"\n\nTanggal: "+note.tanggal+
-"\nKategori: "+note.kategori+
-"\n\n"+note.isi
-);
-}
-
 };
 
 bubbles.push(bubble);
@@ -420,12 +328,9 @@ bubbles.push(bubble);
 
 function animate(){
 for(let b of bubbles){
-b.x+=b.dx;
-b.y+=b.dy;
-
-if(b.x<=0||b.x+b.size>=window.innerWidth) b.dx*=-1;
-if(b.y<=0||b.y+b.size>=window.innerHeight) b.dy*=-1;
-
+b.x+=b.dx;b.y+=b.dy;
+if(b.x<=0||b.x+b.size>=innerWidth)b.dx*=-1;
+if(b.y<=0||b.y+b.size>=innerHeight)b.dy*=-1;
 b.el.style.left=b.x+"px";
 b.el.style.top=b.y+"px";
 }
@@ -434,13 +339,7 @@ requestAnimationFrame(animate);
 
 loadNotes();
 animate();
-
-window.closeDetail=()=>{
-detailModal.style.display="none";
-};
 </script>
 
 </body>
 </html>
-
-
