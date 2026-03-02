@@ -1,10 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
   getFirestore, collection, addDoc, getDocs, deleteDoc, 
-  doc, updateDoc, query, where 
+  doc, query, where 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔐 FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBxRNXTauqOB3X0FptQPeR7jkBy0gKUS3E",
   authDomain: "emotion-74f3c.firebaseapp.com",
@@ -17,9 +16,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ==========================
-// ADMIN LOGIN
-// ==========================
 const ADMIN_USERNAME = "mylovelybee";
 const ADMIN_PASSWORD = "byblublia372";
 
@@ -37,34 +33,43 @@ const colors={
 6:"#C3A6FF"
 };
 
-// ==========================
-// LOGIN SYSTEM
-// ==========================
-window.login = async()=>{
+//////////////////////////////
+// 🔐 OPEN LOGIN
+//////////////////////////////
+window.openLogin = function(){
+document.getElementById("loginModal").style.display="flex";
+};
+
+//////////////////////////////
+// 🔐 LOGIN SYSTEM
+//////////////////////////////
+window.login = async function(){
+
 const username = document.getElementById("username").value;
 const password = document.getElementById("password").value;
 
-// 🔥 ADMIN LOGIN
-if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD){
-  currentUser = username;
-  currentRole = "admin";
-  alert("Login Admin berhasil 👑");
-} else {
-  // 🔥 USER LOGIN (Firestore)
-  const q = query(collection(db,"users"),
-    where("username","==",username),
-    where("password","==",password)
-  );
-  const snap = await getDocs(q);
+// ADMIN
+if(username===ADMIN_USERNAME && password===ADMIN_PASSWORD){
+currentUser=username;
+currentRole="admin";
+alert("Login sebagai Admin 👑");
+}
+else{
+// USER
+const q=query(collection(db,"users"),
+where("username","==",username),
+where("password","==",password)
+);
+const snap=await getDocs(q);
 
-  if(snap.empty){
-    alert("Username atau password salah!");
-    return;
-  }
+if(snap.empty){
+alert("Username atau password salah!");
+return;
+}
 
-  currentUser = username;
-  currentRole = "user";
-  alert("Login User berhasil ✨");
+currentUser=username;
+currentRole="user";
+alert("Login sebagai User ✨");
 }
 
 document.getElementById("loginModal").style.display="none";
@@ -72,52 +77,34 @@ updateMenu();
 loadNotes();
 };
 
-// ==========================
-// UPDATE MENU
-// ==========================
+//////////////////////////////
+// 🧭 UPDATE MENU
+//////////////////////////////
 function updateMenu(){
 const menu=document.getElementById("menuLeft");
 
 if(currentRole==="admin"){
-menu.innerHTML=`
-<button onclick="openForm()">Tambah Catatan</button>
-<button onclick="openAddUser()">Tambah User</button>
-`;
-}else{
-menu.innerHTML=`
-<button onclick="openForm()">Tambah Catatan</button>
-`;
+menu.innerHTML=`<button onclick="openForm()">Tambah Catatan</button>`;
+}
+else if(currentRole==="user"){
+menu.innerHTML=`<button onclick="openForm()">Tambah Catatan</button>`;
 }
 }
 
-// ==========================
-// TAMBAH USER (ADMIN)
-// ==========================
-window.openAddUser=()=>{
-const username=prompt("Masukkan username baru:");
-const password=prompt("Masukkan password:");
-if(!username||!password) return;
-
-addDoc(collection(db,"users"),{
-username,password
-});
-
-alert("User berhasil ditambahkan!");
-};
-
-// ==========================
-// TAMBAH CATATAN
-// ==========================
-window.openForm=()=>{
+//////////////////////////////
+// 📝 FORM
+//////////////////////////////
+window.openForm=function(){
 if(!currentUser) return alert("Login dulu!");
 document.getElementById("formModal").style.display="flex";
 };
 
-window.closeForm=()=>{
+window.closeForm=function(){
 document.getElementById("formModal").style.display="none";
 };
 
-window.saveNote=async()=>{
+window.saveNote=async function(){
+
 const note={
 tanggal:document.getElementById("tanggal").value,
 username:currentUser,
@@ -134,10 +121,11 @@ closeForm();
 loadNotes();
 };
 
-// ==========================
-// LOAD NOTES
-// ==========================
+//////////////////////////////
+// 📦 LOAD NOTES (AUTO SAAT WEB DIBUKA)
+//////////////////////////////
 async function loadNotes(){
+
 bubbles.forEach(b=>b.el.remove());
 bubbles=[];
 
@@ -145,8 +133,14 @@ let q;
 
 if(currentRole==="admin"){
 q=collection(db,"notes");
-}else{
-q=query(collection(db,"notes"),where("username","==",currentUser));
+}
+else if(currentRole==="user"){
+q=query(collection(db,"notes"),
+where("username","==",currentUser));
+}
+else{
+// BELUM LOGIN → TAMPILKAN SEMUA CATATAN
+q=collection(db,"notes");
 }
 
 const snap=await getDocs(q);
@@ -156,20 +150,11 @@ createBubble(docSnap.data(),docSnap.id);
 });
 }
 
-// ==========================
-// DELETE NOTE
-// ==========================
-window.deleteNote=async()=>{
-if(currentRole!=="admin") return alert("Hanya admin yang bisa hapus!");
-await deleteDoc(doc(db,"notes",selectedId));
-closeDetail();
-loadNotes();
-};
-
-// ==========================
-// CREATE BUBBLE
-// ==========================
+//////////////////////////////
+// 🫧 CREATE BUBBLE
+//////////////////////////////
 function createBubble(note,id){
+
 const size=90+note.level*10;
 const el=document.createElement("div");
 el.className="bubble";
@@ -192,7 +177,7 @@ size
 el.style.left=bubble.x+"px";
 el.style.top=bubble.y+"px";
 
-el.onclick=()=>{
+el.onclick=function(){
 selectedId=id;
 document.getElementById("dJudul").innerText=note.judul;
 document.getElementById("dTanggal").innerText=note.tanggal;
@@ -206,9 +191,23 @@ document.getElementById("detailModal").style.display="flex";
 bubbles.push(bubble);
 }
 
-// ==========================
-// ANIMATION
-// ==========================
+//////////////////////////////
+// ❌ DELETE (ADMIN ONLY)
+//////////////////////////////
+window.deleteNote=async function(){
+if(currentRole!=="admin") return alert("Hanya admin yang bisa hapus!");
+await deleteDoc(doc(db,"notes",selectedId));
+closeDetail();
+loadNotes();
+};
+
+window.closeDetail=function(){
+document.getElementById("detailModal").style.display="none";
+};
+
+//////////////////////////////
+// 🎯 ANIMATION
+//////////////////////////////
 function animate(){
 for(let i=0;i<bubbles.length;i++){
 let b=bubbles[i];
@@ -235,8 +234,6 @@ b.el.style.top=b.y+"px";
 requestAnimationFrame(animate);
 }
 
-window.closeDetail=()=>{
-document.getElementById("detailModal").style.display="none";
-};
-
+// 🔥 LOAD SAAT PERTAMA BUKA WEB
+loadNotes();
 animate();
