@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EMOTION JOURNEY</title>
+<title>Emotion Journey</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
@@ -21,33 +21,43 @@ animation:gradientMove 12s infinite alternate;
 100%{background-position:right;}
 }
 
+/* JUDUL */
 h1{
 position:absolute;
-top:20px;
+top:30px;
 left:50%;
 transform:translateX(-50%);
-font-size:42px;
+font-size:56px;
+font-weight:900;
+letter-spacing:4px;
 color:white;
-text-shadow:0 4px 12px rgba(0,0,0,0.2);
-letter-spacing:2px;
+text-transform:uppercase;
+text-shadow:0 6px 18px rgba(0,0,0,0.25);
+animation:floatTitle 3s ease-in-out infinite alternate;
 }
 
+@keyframes floatTitle{
+0%{transform:translateX(-50%) translateY(0px);}
+100%{transform:translateX(-50%) translateY(8px);}
+}
+
+/* MENU */
 #menuBtn{
 position:absolute;
-top:30px;
+top:40px;
 left:30px;
-padding:10px 18px;
+padding:10px 20px;
 border:none;
-border-radius:20px;
+border-radius:25px;
 background:white;
 cursor:pointer;
 font-weight:bold;
-box-shadow:0 4px 10px rgba(0,0,0,0.15);
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
 }
 
 #menuBox{
 position:absolute;
-top:70px;
+top:90px;
 left:30px;
 display:none;
 flex-direction:column;
@@ -55,7 +65,7 @@ gap:10px;
 background:white;
 padding:15px;
 border-radius:15px;
-box-shadow:0 6px 15px rgba(0,0,0,0.2);
+box-shadow:0 6px 15px rgba(0,0,0,0.25);
 }
 
 #menuBox button{
@@ -66,6 +76,7 @@ background:#f3f3f3;
 cursor:pointer;
 }
 
+/* BUBBLE */
 .bubble{
 position:absolute;
 border-radius:50%;
@@ -83,6 +94,7 @@ transition:transform 0.3s;
 
 .bubble:hover{transform:scale(1.1);}
 
+/* MODAL */
 .modal{
 position:fixed;
 top:0;
@@ -119,42 +131,45 @@ border-radius:10px;
 background:#d8b4fe;
 cursor:pointer;
 }
+
+.deleteBtn{
+background:#ff9e9e !important;
+}
 </style>
 </head>
 
 <body>
 
-<h1>My Feeling</h1>
+<h1>Emotion Journey</h1>
 
 <button id="menuBtn" onclick="toggleMenu()">☰ MENU</button>
 
 <div id="menuBox">
 <button onclick="openForm()">Tambah Catatan</button>
-<button onclick="editNote()">Edit Catatan</button>
+<button onclick="enterEditMode()">Edit / Hapus Catatan</button>
 </div>
 
 <!-- TAMBAH -->
 <div id="formModal" class="modal">
 <div class="card">
 <h2>Tambah Catatan</h2>
-<input type="date" id="tanggal">
 <input type="text" id="judul" placeholder="Judul">
 <textarea id="isi" placeholder="Isi catatan"></textarea>
 
 <select id="level">
 <option value="1">Level 1 – Peaceful | Tenang, stabil, damai</option>
 <option value="2">Level 2 – Happy | Bahagia, nyaman, merasa dicintai</option>
-<option value="3">Level 3 – Unsettled | Khawatir, overthinking ringan, sedikit gelisah</option>
+<option value="3">Level 3 – Unsettled | Khawatir ringan, sedikit gelisah</option>
 <option value="4">Level 4 – Sad | Sedih, kecewa, lelah emosional</option>
 <option value="5">Level 5 – Stressed | Marah, tertekan, overwhelmed</option>
-<option value="6">Level 6 – Breakdown | Sangat hancur, panik berat, ingin menghilang</option>
+<option value="6">Level 6 – Breakdown | Sangat hancur, panik berat</option>
 </select>
 
 <select id="kategori">
-<option value="Love">💖 Love – Tentang pasangan, gebetan, rasa diprioritaskan, cemburu, ditinggalkan</option>
-<option value="Family">👨‍👩‍👧 Family – Tentang orang tua, kakak, ekonomi, perasaan tidak didengar</option>
-<option value="Self">🌱 Self – Tentang insecure, percaya diri, merasa gagal, bangga diri</option>
-<option value="Life">🌍 Life – Tentang kuliah, kerja, sosial, tekanan deadline, burnout</option>
+<option value="Love">💖 Love</option>
+<option value="Family">👨‍👩‍👧 Family</option>
+<option value="Self">🌱 Self</option>
+<option value="Life">🌍 Life</option>
 </select>
 
 <button onclick="saveNote()">Simpan</button>
@@ -170,12 +185,12 @@ cursor:pointer;
 <textarea id="eIsi"></textarea>
 
 <select id="eLevel">
-<option value="1">Level 1 – Peaceful | Tenang, stabil, damai</option>
-<option value="2">Level 2 – Happy | Bahagia, nyaman, merasa dicintai</option>
-<option value="3">Level 3 – Unsettled | Khawatir, overthinking ringan, sedikit gelisah</option>
-<option value="4">Level 4 – Sad | Sedih, kecewa, lelah emosional</option>
-<option value="5">Level 5 – Stressed | Marah, tertekan, overwhelmed</option>
-<option value="6">Level 6 – Breakdown | Sangat hancur, panik berat, ingin menghilang</option>
+<option value="1">Level 1 – Peaceful</option>
+<option value="2">Level 2 – Happy</option>
+<option value="3">Level 3 – Unsettled</option>
+<option value="4">Level 4 – Sad</option>
+<option value="5">Level 5 – Stressed</option>
+<option value="6">Level 6 – Breakdown</option>
 </select>
 
 <select id="eKategori">
@@ -186,36 +201,25 @@ cursor:pointer;
 </select>
 
 <button onclick="updateNote()">Update</button>
-</div>
-</div>
-
-<!-- DETAIL -->
-<div id="detailModal" class="modal">
-<div class="card" id="detailCard">
-<h2 id="dJudul"></h2>
-<p id="dLevel"></p>
-<p id="dTanggal"></p>
-<p id="dKategori"></p>
-<p id="dIsi"></p>
-<button onclick="closeDetail()">Tutup</button>
+<button class="deleteBtn" onclick="deleteNote()">Hapus</button>
 </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyBxRNXTauqOB3X0FptQPeR7jkBy0gKUS3E",
-authDomain: "emotion-74f3c.firebaseapp.com",
-projectId: "emotion-74f3c",
-storageBucket: "emotion-74f3c.firebasestorage.app",
-messagingSenderId: "740825781548",
-appId: "1:740825781548:web:90d4e448d440a953440889"
+apiKey:"AIzaSyBxRNXTauqOB3X0FptQPeR7jkBy0gKUS3E",
+authDomain:"emotion-74f3c.firebaseapp.com",
+projectId:"emotion-74f3c",
+storageBucket:"emotion-74f3c.firebasestorage.app",
+messagingSenderId:"740825781548",
+appId:"1:740825781548:web:90d4e448d440a953440889"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
 
 const PASSWORD="byblublia372";
 
@@ -228,24 +232,16 @@ const colors={
 6:"#C3A6FF"
 };
 
-const levelDescriptions={
-1:"Level 1 – Peaceful | Tenang, stabil, damai",
-2:"Level 2 – Happy | Bahagia, nyaman, merasa dicintai",
-3:"Level 3 – Unsettled | Khawatir, overthinking ringan, sedikit gelisah",
-4:"Level 4 – Sad | Sedih, kecewa, lelah emosional",
-5:"Level 5 – Stressed | Marah, tertekan, overwhelmed",
-6:"Level 6 – Breakdown | Sangat hancur, panik berat, ingin menghilang"
-};
-
 let bubbles=[];
 let selectedId=null;
+let editMode=false;
+let createdDate=null;
 
 window.toggleMenu=()=>menuBox.style.display=
 menuBox.style.display==="flex"?"none":"flex";
 
 function checkPass(){
-let p=prompt("Masukkan password:");
-return p===PASSWORD;
+return prompt("Masukkan password:")===PASSWORD;
 }
 
 window.openForm=()=>{if(!checkPass())return;formModal.style.display="flex";}
@@ -253,18 +249,21 @@ window.closeForm=()=>formModal.style.display="none";
 
 window.saveNote=async()=>{
 await addDoc(collection(db,"notes"),{
-tanggal:tanggal.value,
+tanggal:new Date().toLocaleDateString(),
 judul:judul.value,
 isi:isi.value,
 level:parseInt(level.value),
-kategori:kategori.value,
-createdAt:new Date()
+kategori:kategori.value
 });
 closeForm();
 loadNotes();
 };
 
-window.editNote=()=>{if(!checkPass())return;if(!selectedId)return alert("Klik bubble dulu");editModal.style.display="flex";}
+window.enterEditMode=()=>{
+if(!checkPass())return;
+editMode=true;
+alert("Klik bubble yang ingin diedit atau dihapus.");
+};
 
 window.updateNote=async()=>{
 await updateDoc(doc(db,"notes",selectedId),{
@@ -277,7 +276,11 @@ editModal.style.display="none";
 loadNotes();
 };
 
-window.closeDetail=()=>detailModal.style.display="none";
+window.deleteNote=async()=>{
+await deleteDoc(doc(db,"notes",selectedId));
+editModal.style.display="none";
+loadNotes();
+};
 
 async function loadNotes(){
 bubbles.forEach(b=>b.el.remove());
@@ -298,8 +301,8 @@ document.body.appendChild(el);
 
 let bubble={
 el,id,note,
-x:Math.random()*(window.innerWidth-size),
-y:Math.random()*(window.innerHeight-size),
+x:Math.random()*(innerWidth-size),
+y:Math.random()*(innerHeight-size),
 dx:(Math.random()*2+1)*(Math.random()>.5?1:-1),
 dy:(Math.random()*2+1)*(Math.random()>.5?1:-1),
 size
@@ -310,21 +313,21 @@ el.style.top=bubble.y+"px";
 
 el.onclick=()=>{
 selectedId=id;
-dJudul.innerText=note.judul;
-dLevel.innerText=levelDescriptions[note.level];
-dTanggal.innerText=note.tanggal;
-dKategori.innerText=note.kategori;
-dIsi.innerText=note.isi;
-detailCard.style.background=colors[note.level];
-detailModal.style.display="flex";
+if(editMode){
+eJudul.value=note.judul;
+eIsi.value=note.isi;
+eLevel.value=note.level;
+eKategori.value=note.kategori;
+editModal.style.display="flex";
+editMode=false;
+}
 };
 
 bubbles.push(bubble);
 }
 
 function animate(){
-for(let i=0;i<bubbles.length;i++){
-let b=bubbles[i];
+for(let b of bubbles){
 b.x+=b.dx;b.y+=b.dy;
 if(b.x<=0||b.x+b.size>=innerWidth)b.dx*=-1;
 if(b.y<=0||b.y+b.size>=innerHeight)b.dy*=-1;
