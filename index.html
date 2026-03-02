@@ -176,7 +176,18 @@ background:#ff9e9e !important;
 <button onclick="closeForm()">Batal</button>
 </div>
 </div>
-
+<!-- DETAIL MODAL -->
+<div id="detailModal" class="modal">
+  <div class="card" id="detailCard">
+    <h2 id="dJudul"></h2>
+    <p id="dTanggal"></p>
+    <p id="dLevel"></p>
+    <p id="dKategori"></p>
+    <textarea id="dIsi" readonly style="height:100px;"></textarea>
+    <button onclick="closeDetail()">Tutup</button>
+  </div>
+</div>
+  
 <!-- EDIT -->
 <div id="editModal" class="modal">
 <div class="card">
@@ -378,3 +389,4 @@ animate();
 
 </body>
 </html>
+
