@@ -6,19 +6,20 @@
 <title>Emotion Journey</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;font-family:'Poppins',sans-serif;overflow:hidden;}
 
+/* 🌈 BACKGROUND GRADIENT PASTEL */
 body{
-height:100vh;
-overflow:hidden;
-background:linear-gradient(135deg,#ffd6e8,#e0c3fc,#c2f0ff);
-background-size:300% 300%;
-animation:gradientMove 12s infinite alternate;
+  background:linear-gradient(-45deg,#fbc2eb,#a6c1ee,#fddb92,#c2ffd8);
+  background-size:400% 400%;
+  animation:gradientMove 18s ease infinite;
 }
 
 @keyframes gradientMove{
-0%{background-position:left;}
-100%{background-position:right;}
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
 }
 
 .header{
@@ -345,4 +346,5 @@ animate();
 
 </body>
 </html>
+
 
